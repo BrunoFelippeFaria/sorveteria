@@ -1,55 +1,58 @@
 package dev.sorveteria.demo.services;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
-import dev.sorveteria.demo.Dtos.SorveteUpdateDto;
+import dev.sorveteria.demo.Dtos.SorveteDto;
 import dev.sorveteria.demo.Exeptions.NotFoundExeption;
+import dev.sorveteria.demo.models.Sabor;
 import dev.sorveteria.demo.models.Sorvete;
 import dev.sorveteria.demo.repositories.SorveteRepository;
 import jakarta.transaction.Transactional;
 
 @Service
 public class SorveteService {
-    private final SorveteRepository _sorveteRepository;
+    private final SorveteRepository sorveteRepository;
+    private final SaborService SaborService;
 
-    public SorveteService(SorveteRepository sorveteRepository){
-        _sorveteRepository = sorveteRepository;
+    public SorveteService(SorveteRepository sorveteRepository, SaborService saborService){
+        this.sorveteRepository = sorveteRepository;
+        this.SaborService = saborService;
     }
 
-    public Sorvete add(Sorvete sorvete) {
-        return _sorveteRepository.save(sorvete);
+    public Sorvete add(SorveteDto sorveteDto) {
+        Sorvete sorvete = new Sorvete();
+        mapFromDto(sorvete, sorveteDto);
+        
+        return sorveteRepository.save(sorvete);
     }
 
     public List<Sorvete> getAll(){
-        return _sorveteRepository.findAll();
+        return sorveteRepository.findAll();
     }
 
     public Sorvete getById(Long id){
-        return _sorveteRepository.findById(id)
+        return sorveteRepository.findById(id)
             .orElseThrow(() -> new NotFoundExeption("Sorvete não encontrado."));
     }
 
     public void deleteById(Long id){
-        _sorveteRepository.deleteById(id);
+        sorveteRepository.deleteById(id);
     }
 
     @Transactional
-    public void update(Long id, SorveteUpdateDto sorveteDto) {
-        Optional<Sorvete> sorveteOpt = _sorveteRepository.findById(id);
+    public void update(Long id, SorveteDto sorveteDto) {
+        Sorvete sorvete = getById(id);
+        mapFromDto(sorvete, sorveteDto);
+    }
 
-        if(sorveteOpt.isEmpty()) {
-            throw new NotFoundExeption("Sorvete não encontrado.");
-        }
-
-        Sorvete sorvete = sorveteOpt.get();
-
+    private void mapFromDto (Sorvete sorvete, SorveteDto sorveteDto) {
         sorvete.setDescricao(sorveteDto.descricao());
         sorvete.setPreco(sorveteDto.preco());
         sorvete.setQuantidade(sorveteDto.quantidade());
         sorvete.setTipo(sorveteDto.tipo());
-
+        
+        Sabor sabor = SaborService.getById(sorveteDto.saborId());
+        sorvete.setSabor(sabor); 
     }
 }

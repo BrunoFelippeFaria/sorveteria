@@ -18,35 +18,34 @@ import dev.sorveteria.demo.services.SaborService;
 @RestController
 @RequestMapping("api/sorvetes/sabores")
 public class SaborController {
-    private final SaborService _SaborService;
+    private final SaborService saborService;
 
     public SaborController(SaborService saborService){
-        _SaborService = saborService;
+        this.saborService = saborService;
     }
 
     @GetMapping
     public List<Sabor> getAll(){
-        return _SaborService.getAll();
+        return saborService.getAll();
     }
 
     @GetMapping("/{id}")
     public Sabor getById(@PathVariable Long id) {
-        return _SaborService.getById(id);
+        return saborService.getById(id);
     }
 
     @PostMapping
     public Sabor create(@RequestBody Sabor sabor) {
-        return _SaborService.save(sabor);
+        return saborService.save(sabor);
     }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
-        _SaborService.deleteById(id);
+        saborService.deleteById(id);
     }
     
     @PutMapping("/{id}")
     public void update(@PathVariable Long id, @RequestBody SaborDto saborDto) {
-        _SaborService.update(id, saborDto);
+        saborService.update(id, saborDto);
     }
-
 }

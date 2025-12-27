@@ -11,27 +11,27 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class SaborService {
-    private final SaborRepository _saborRepository;
+    private final SaborRepository saborRepository;
 
     public SaborService(SaborRepository saborRepository) {
-        this._saborRepository = saborRepository;
+        this.saborRepository = saborRepository;
     }
     
     public List<Sabor> getAll(){
-        return _saborRepository.findAll();
+        return saborRepository.findAll();
     }
 
     public Sabor getById(Long id){
-        return _saborRepository.findById(id)
+        return saborRepository.findById(id)
             .orElseThrow(() -> new NotFoundExeption("Sabor não encontrado."));
     }
 
     public Sabor save(Sabor sabor){
-        return _saborRepository.save(sabor);
+        return saborRepository.save(sabor);
     }
 
     public void deleteById(Long id){
-        _saborRepository.deleteById(id);
+        saborRepository.deleteById(id);
     }
 
     @Transactional

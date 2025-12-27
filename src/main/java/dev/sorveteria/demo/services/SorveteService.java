@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import dev.sorveteria.demo.Dtos.SorveteUpdateDto;
+import dev.sorveteria.demo.Exeptions.NotFoundExeption;
 import dev.sorveteria.demo.models.Sorvete;
 import dev.sorveteria.demo.repositories.SorveteRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +29,7 @@ public class SorveteService {
 
     public Sorvete getById(Long id){
         return _sorveteRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Sorvete não encontrado"));
+            .orElseThrow(() -> new NotFoundExeption("Sorvete não encontrado."));
     }
 
     public void deleteById(Long id){
@@ -40,7 +41,7 @@ public class SorveteService {
         Optional<Sorvete> sorveteOpt = _sorveteRepository.findById(id);
 
         if(sorveteOpt.isEmpty()) {
-            throw new RuntimeException("Sorvete não encontrado");
+            throw new NotFoundExeption("Sorvete não encontrado.");
         }
 
         Sorvete sorvete = sorveteOpt.get();
